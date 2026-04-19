@@ -2,16 +2,12 @@
 
 def main():
 
-    print("=== FILE ORGANIZER SYSTEM (INDUSTRY LEVEL) ===")
+    print("=== FILE ORGANIZER FROM SCRATCH ===")
 
     path = input("Enter folder path: ")
 
-    organizer = FileOrganizer(path)
-
-    organizer.create_folders()
-    organizer.organize()
-
-    print("Files organized successfully ✔")
+    app = FileOrganizer(path)
+    app.start()
 
 
 if __name__ == "__main__":
