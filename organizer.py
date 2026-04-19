@@ -1,34 +1,37 @@
 import os
 import shutil
-from config import FILE_TYPES
-
-
+import time
 class FileOrganizer:
+    def __init__(self, path):
+        self.path = path
+    def scan(self):
+        return os.listdir(self.path)
+    def get_type(self, file):
+        ext = os.path.splitext(file)[1].lower()
+        if ext in [".jpg", ".png", ".jpeg"]:
+            return "Images"
+        elif ext in [".pdf", ".txt", ".docx"]:
+            return "Documents"
+        elif ext in [".mp4", ".mkv"]:
+            return "Videos"
+        else:
+            return "Others"
+    def move(self, file):
+        source = os.path.join(self.path, file)
+        folder = self.get_type(file)
+        target_folder = os.path.join(self.path, folder)
+        if not os.path.exists(target_folder):
+            os.makedirs(target_folder)
+        destination = os.path.join(target_folder, file)
+        shutil.move(source, destination)
+        print(f"Moved: {file} -> {folder}")
+    def start(self):
+        print("Automation started...")
+        while True:
+            files = self.scan()
+            for file in files:
+                file_path = os.path.join(self.path, file)
+                if os.path.isfile(file_path):
+                    self.move(file)
 
-    def __init__(self, folder_path):
-        self.folder_path = folder_path
-
-    def create_folders(self):
-        for folder in FILE_TYPES.keys():
-            path = os.path.join(self.folder_path, folder)
-            if not os.path.exists(path):
-                os.makedirs(path)
-
-    def organize(self):
-        files = os.listdir(self.folder_path)
-
-        for file in files:
-            file_path = os.path.join(self.folder_path, file)
-
-            if os.path.isfile(file_path):
-                self.move_file(file)
-
-    def move_file(self, file):
-        file_path = os.path.join(self.folder_path, file)
-        extension = os.path.splitext(file)[1]
-
-        for folder, extensions in FILE_TYPES.items():
-            if extension in extensions:
-                destination = os.path.join(self.folder_path, folder, file)
-                shutil.move(file_path, destination)
-                break
+            time.sleep(5)
